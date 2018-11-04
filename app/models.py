@@ -6,7 +6,15 @@ class projectx_user(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=10)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     def name(self, instance):
         return instance.first_name+' '+instance.last_name
+
+class message(models.Model):
+    from_user = models.ForeignKey('projectx_user')
+    to_user = models.ForeignKey('projectx_user')
+    message = models.CharField(max_length=100)
+    created_date = models.DateTimeField(auto_now_add=True)
 
