@@ -13,8 +13,8 @@ class projectx_user(AbstractBaseUser):
         return instance.first_name+' '+instance.last_name
 
 class message(models.Model):
-    from_user = models.ForeignKey('projectx_user')
-    to_user = models.ForeignKey('projectx_user')
+    from_user = models.ForeignKey('projectx_user', related_name='fromuser', on_delete=models.CASCADE)
+    to_user = models.ForeignKey('projectx_user', related_name='touser', on_delete=models.CASCADE)
     message = models.CharField(max_length=100)
     created_date = models.DateTimeField(auto_now_add=True)
 
