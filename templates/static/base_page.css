@@ -1,0 +1,161 @@
+#homepage {
+    margin-left: 540px;
+    margin-top: 150px;
+    color: blue;
+}
+#login {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 7px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    margin-left: -55px;
+    width:150px;
+}
+#register {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 7px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    width:150px;
+}
+#register:hover, #login:hover, #login_button:hover {
+    opacity: 0.6;
+}
+::-moz-placeholder {
+    text-align: center;  
+ }
+#login_form, #register_form {
+    background-color: #f2f2f2;
+    width:270px;
+    padding: 15px;
+    margin-left:-52px;
+    margin-top: 20px;
+}
+#username, #password, #password_re, #phone, #first_name, #last_name{
+    color: black;
+    margin-left: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: white;
+    border-style: none;
+    height:35px;
+    width:250px;
+    margin-bottom:10px;
+    text-align: center;
+}
+#login_button, #register_button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 7px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    width:270px;
+}
+#dashboard_details {
+    margin-top: -50px;
+    margin-left: -500px;
+    padding: 20px;
+    width:300px;
+    height:150px;
+    background: wheat;
+}
+#dashboard_detail_elements {
+    padding: 5px;
+}
+#inbox {
+    margin-top: -145px;
+    margin-left: 840px;
+    padding: 20px;
+    width:300px;
+    height:400px;
+    background: rgb(179, 245, 201);
+}
+#person, #inbox_back, #sent_button{
+    float: right;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 15px;
+    width:80px;
+    height: 25px;
+}
+#sent_button {
+    background-color:rgb(103, 252, 210); 
+}
+#inbox_back {
+    float: left;
+    margin-top: -20px;
+}
+#message {
+    margin: 10px;
+}
+#inbox_messages_from {
+    padding: 20px;
+    padding-left: 40px;
+}
+#inbox_logo {
+    padding-left: 120px;
+}
+#inbox_message_elements{
+    background: rgb(206, 255, 208);
+    padding: 5px;
+}
+#inbox_message_time {
+    margin-left: 200px;
+}
+#message_data {
+    margin-left: 35px;
+    background: rgb(206, 255, 208);
+    height: 25px;
+    padding: 5px;
+    margin-top: 5px;
+    width:250px;
+}
+#logout {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 15px;
+    width:80px;
+    height: 25px;
+    margin-top: -155px;
+    margin-left: 210px;
+}
+#sent_message {
+    margin-top: -170px;
+    margin-left: -20px;
+    width:300px;
+    padding: 20px;
+    background: rgb(160, 255, 255);
+}
+#to_section {
+    width:300px;
+    padding-top: 10px;
+}
+#to {
+    background-color: #4CAF50;
+    width:175px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    height:27px;
+    border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1)
+}
