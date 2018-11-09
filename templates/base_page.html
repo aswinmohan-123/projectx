@@ -1,30 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static from staticfiles %}
     <meta charset="UTF-8">
     <title>Home Page</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'base_page.css'%}">
 </head>
 <body>
-    <h1>Home Page</h1>
-    <input type="button" value="Login" id="login" onclick="login()">
-    <input type="button" value="Register" id="register" onclick="register()">
-    <div id="login_form"></div>
+    <div id="homepage">
+        <h1>Home Page</h1>
+        <input type="button" value="Login" id="login" onclick="login()">
+        <input type="button" value="Register" id="register" onclick="register()">
+        <div id="form"></div>
+    </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+    token = ''
+    window.onload = function()
+    {
+        token = localStorage.getItem("token")
+        if(token != '')
+        {
+            dashboard(token)
+        }
+    }
     function login(){
-        html = "username : <input type='text' id='username'><br>"
-        html += "password : <input type='password' id='password'><br>"
-        html += "<input type = 'button' id='login_button' value='login' onclick='login_api()'>"
-        document.getElementById("login_form").innerHTML = html;
+        html = "<div id='login_form'><div id='login_username'><input type='text' id='username' placeholder='Enter Username' required></div><br>"
+        html += "<div id='login_password'><input type='password' id='password' placeholder='Enter Password' required></div><br>"
+        html += "<input type = 'button' id='login_button' value='login' onclick='login_api()'></div>"
+        document.getElementById("form").innerHTML = html;
     };
     function login_api(){
-        $.ajax({url: "/login/", type: "post", data:{"username": $('#username').val(), "password": $('#password').val()},
+        $.ajax({url: "/login/", type: "post", data:{username: $('#username').val(), password: $('#password').val(), csrfmiddlewaretoken: '{{csrf_token}}'},
          success: function(data){
-            console.log("successful")
-            console.log(data)
-         }
-        });
+            token = data.token
+            localStorage.setItem("token", data.token)
+            dashboard(token)
+         },
+         error: function(error){
+         console.log(error)
+        }});
+    };
+    function register(){
+        html = "<div id='register_form'><input type='text' id='username' placeholder='Enter Username'><br>"
+        html += "<input type='password' id='password' placeholder='Enter Password'><br>"
+        html += "<input type='password' id='password_re' placeholder='Repeat Password'><br>"
+        html += "<input type='text' id='first_name' placeholder='Enter First Name'><br>"
+        html += "<input type='text' id='last_name' placeholder='Enter Last Name'><br>"
+        html += "<input type='text' id='phone' placeholder='Enter Phone'><br>"
+        html += "<input type = 'button' id='register_button' value='register' onclick='register_api()'></div>"
+        document.getElementById("form").innerHTML = html;
+    }
+    function register_api(){
+        $.ajax({url: "/register/", type: "post", data:{username: $('#username').val(),
+         password: $('#password').val(),
+         password_repeat: $('#password_re').val(),
+         first_name: $('#first_name').val(),
+         last_name: $('#last_name').val(),
+         phone: $('#phone').val(),
+         csrfmiddlewaretoken: '{{csrf_token}}'
+         },
+         success: function(data){
+            token = data.token
+            localStorage.setItem("token", data.token)
+            dashboard(token)
+         },
+          error: function(error){
+         console.log(error)
+        }});
+    };
+    function dashboard(token){
+        $.ajax({
+            url: "/details/",
+            type: "get",
+            headers: {'Authorization': 'token '+token},
+
+            success: function(data){
+                document.getElementById('homepage').innerHTML='';
+                var username = data.username;
+                var first_name = data.first_name;
+                var last_name = data.last_name;
+                var phone = data.phone;
+
+            html = "<div id='dashboard_details'>Profile<br>----------------------------------------------<br>";
+            html += "<div id='dashboard_detail_elements'>Username :: "+username+"<br></div>";
+            html += "<div id='dashboard_detail_elements'>First name :: "+first_name+"<br></div>";
+            html += "<div id='dashboard_detail_elements'>Last name :: "+last_name+"<br></div>";
+            html += "<div id='dashboard_detail_elements'>Phone :: "+phone+"<br>";
+            html += "<input id='logout' type='button' value='Logout' onclick='logout()'></div>";
+            html += "<div id=inbox></div>"
+            html += "<div id=sendBox></div>"
+            document.getElementById('homepage').innerHTML=html
+
+            $.ajax({
+                url: "/inbox/",
+                type: "get",
+                headers: {'Authorization': 'token '+token},
+
+                success: function(data)
+                {
+                    html = "<div id='inbox_logo'>InBox</div><br>-----------------------------------------------------------<br>";
+                    for (name in data.names)
+                    {
+                        html += "<div id='message'>"+data.names[name]+"";
+                        html += "<input type='button' value='open' id='person' onclick='open_user(\""+data.names[name]+"\")'></div><br>"
+                    };
+                document.getElementById('inbox').innerHTML=html
+                }
+            });
+
+            var peoples=''
+            $.ajax({
+                url: "/peoples/",
+                type: "get",
+                headers: {'Authorization': 'token '+token},
+                success: function(data)
+                {
+            html = "<div id='sent_message'>Message : <input type='text' id='message_data'><br>";
+            html +="<div id='to_section'>To : <select id='to'>"
+            for (people in data)
+            {
+                html += "<option value="+data[people]+">"+data[people].username+"</option>"
+            }
+            html += "</select>"
+            html += "<input id='sent_button' type='button' value='sent' onclick='send_message()'></div></div>"
+            document.getElementById('sendBox').innerHTML = html
+                }
+            });
+        }});
+
+    };
+    function send_message(){
+        to = document.getElementById('to')
+        to = to.options[to.selectedIndex].text
+        message = $('#message_data').val()
+        $.ajax({url: "/send/",
+         type: "post",
+          data: {"to_user": to, "message": message},
+           headers: {'Authorization': 'token '+token},
+           success: function(data){
+            location.reload()
+           }});
+    };
+    function logout()
+    {
+        localStorage.removeItem("token")
+        location.reload()
+    };
+    function open_user(name)
+    {
+        $.ajax({
+                url: "/inbox?sender="+name,
+                type: "get",
+                headers: {'Authorization': 'token '+token},
+
+                success: function(data)
+                {
+                    html = "<div id='inbox_logo'>Chat Room</div><input id='inbox_back' type='button' value='back' onclick='dashboard(token)'><br>-----------------------------------------------------------<br>";
+                    html += "<div id='inbox_messages_from'>From :: "+name+"<br></div>";
+                    for (message in data.messages)
+                    {
+                        html += "<div id='inbox_message_elements'><div id='inbox_message'>"+data.messages[message][0]+"</div>"
+                        html += "<div id='inbox_message_time'>"+data.messages[message][1]+"</div></div><br>"
+                    };
+                document.getElementById('inbox').innerHTML=html
+                }
+            });
     };
 </script>
 </html>
