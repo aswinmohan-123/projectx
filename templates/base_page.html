@@ -17,6 +17,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     token = ''
+    sendto = ''
     window.onload = function()
     {
         token = localStorage.getItem("token")
@@ -28,7 +29,7 @@
     function login(){
         html = "<div id='login_form'><div id='login_username'><input type='text' id='username' placeholder='Enter Username' required></div><br>"
         html += "<div id='login_password'><input type='password' id='password' placeholder='Enter Password' required></div><br>"
-        html += "<input type = 'button' id='login_button' value='login' onclick='login_api()'></div>"
+        html += "<input type = 'button' id='login_button' value='login' onclick='login_api()'><div id='error'></div></div>"
         document.getElementById("form").innerHTML = html;
     };
     function login_api(){
@@ -39,7 +40,9 @@
             dashboard(token)
          },
          error: function(error){
-         console.log(error)
+         error = JSON.parse(error['responseText'])
+         html = "<p id='login_error'>-  "+error["error"]+"</p>";
+         document.getElementById('error').innerHTML = html
         }});
     };
     function register(){
@@ -49,7 +52,7 @@
         html += "<input type='text' id='first_name' placeholder='Enter First Name'><br>"
         html += "<input type='text' id='last_name' placeholder='Enter Last Name'><br>"
         html += "<input type='text' id='phone' placeholder='Enter Phone'><br>"
-        html += "<input type = 'button' id='register_button' value='register' onclick='register_api()'></div>"
+        html += "<input type = 'button' id='register_button' value='register' onclick='register_api()'><div id='error'></div></div>"
         document.getElementById("form").innerHTML = html;
     }
     function register_api(){
@@ -67,7 +70,9 @@
             dashboard(token)
          },
           error: function(error){
-         console.log(error)
+         error = JSON.parse(error['responseText'])
+         html = "<p id='register_error'>-  "+error["error"]+"</p>";
+         document.getElementById('error').innerHTML = html
         }});
     };
     function dashboard(token){
@@ -100,10 +105,10 @@
 
                 success: function(data)
                 {
-                    html = "<div id='inbox_logo'>InBox</div><br>-----------------------------------------------------------<br>";
+                    html = "<div id='inbox_logo'>Chat</div><br>-----------------------------------------------------------<br>";
                     for (name in data.names)
                     {
-                        html += "<div id='message'>"+data.names[name]+"";
+                        html += "<div id='message'>"+data.names[name][0]+"";
                         html += "<input type='button' value='open' id='person' onclick='open_user(\""+data.names[name]+"\")'></div><br>"
                     };
                 document.getElementById('inbox').innerHTML=html
@@ -148,25 +153,48 @@
         localStorage.removeItem("token")
         location.reload()
     };
-    function open_user(name)
+    function open_user(chat)
     {
+    chat = chat.split(",")
         $.ajax({
-                url: "/inbox?sender="+name,
+                url: "/inbox?chat="+chat[1],
                 type: "get",
                 headers: {'Authorization': 'token '+token},
 
                 success: function(data)
                 {
+                console.log(data.messages[0])
+                    sendto = data.messages[0][3]
                     html = "<div id='inbox_logo'>Chat Room</div><input id='inbox_back' type='button' value='back' onclick='dashboard(token)'><br>-----------------------------------------------------------<br>";
-                    html += "<div id='inbox_messages_from'>From :: "+name+"<br></div>";
+                    html += "<div id='inbox_messages_from'>From :: "+chat[0]+"<br></div>";
                     for (message in data.messages)
                     {
-                        html += "<div id='inbox_message_elements'><div id='inbox_message'>"+data.messages[message][0]+"</div>"
-                        html += "<div id='inbox_message_time'>"+data.messages[message][1]+"</div></div><br>"
+                        if (data.messages[message][2] == 1)
+                        {
+                            html += "<div id='inbox_message_elements'><div id='inbox_message'>"+data.messages[message][0]+"</div>"
+                            html += "<div id='inbox_message_time'>"+data.messages[message][1]+"</div></div><br>"
+                        }
+                        else {
+                            html += "<div id='inbox_reply_elements'><div id='inbox_reply'>"+data.messages[message][0]+"</div>"
+                            html += "<div id='inbox_message_time'>"+data.messages[message][1]+"</div></div><br>"
+                        }
                     };
+                    html += "<div id='reply_message'>Reply : <input type='text' id='reply_data'><br>";
+                    html += "<input id='reply_button' type='button' value='reply' onclick='reply_messages()'></div></div>"
                 document.getElementById('inbox').innerHTML=html
                 }
             });
+    function reply_messages(){
+    message = $('#reply_data').val()
+    $.ajax({url: "/send/",
+     type: "post",
+      data: {"to_user": sendto, "message": message},
+       headers: {'Authorization': 'token '+token},
+       success: function(data){
+        location.reload()
+       }});
+    };
+
     };
 </script>
 </html>

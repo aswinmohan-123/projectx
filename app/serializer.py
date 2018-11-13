@@ -63,14 +63,14 @@ class InboxSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('from_user', 'to_user', 'message', 'created_date')
+        fields = ('from_user', 'to_user', 'message', 'chat', 'created_date')
 
 
 class sendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('from_user', 'to_user', 'message', 'created_date')
+        fields = ('from_user', 'to_user', 'message', 'chat', 'created_date')
 
 
 

@@ -81,7 +81,7 @@
     height:400px;
     background: rgb(179, 245, 201);
 }
-#person, #inbox_back, #sent_button{
+#person, #inbox_back, #sent_button, #reply_button{
     float: right;
     background-color: #4CAF50;
     border: none;
@@ -93,7 +93,7 @@
     width:80px;
     height: 25px;
 }
-#sent_button {
+#sent_button, #reply_button {
     background-color:rgb(103, 252, 210); 
 }
 #inbox_back {
@@ -113,6 +113,7 @@
 #inbox_message_elements{
     background: rgb(206, 255, 208);
     padding: 5px;
+    margin-right: 20px;
 }
 #inbox_message_time {
     margin-left: 200px;
@@ -158,4 +159,29 @@
     height:27px;
     border: 1px solid transparent;
   border-color: transparent transparent rgba(0, 0, 0, 0.1)
+}
+#error {
+    color: red;
+    background-color: rgb(248, 205, 205); 
+}
+#login_error {
+    width:300px;
+    font-size: 13px;
+}
+#register_error {
+    width:300px;
+    font-size: 11px;
+}
+#inbox_reply_elements {
+    background: rgb(238, 220, 197);
+    padding: 5px;
+    margin-left: 20px;
+}
+#reply_data {
+    margin-left: 35px;
+    background: rgb(206, 255, 208);
+    height: 25px;
+    padding: 5px;
+    margin-top: 5px;
+    width:250px;
 }

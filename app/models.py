@@ -62,5 +62,9 @@ class Message(models.Model):
     from_user = models.ForeignKey('ProjectxUser', related_name='fromuser', on_delete=models.CASCADE)
     to_user = models.ForeignKey('ProjectxUser', related_name='touser', on_delete=models.CASCADE)
     message = models.CharField(max_length=100)
+    chat = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
+
+class Config(models.Model):
+    chat_max_number = models.IntegerField(default=0)
